@@ -10,19 +10,22 @@ using System.IO;
 using System.Collections;
 
 
-namespace mySecondtry
+namespace Domotica
 {
     public class Program
     {
         private static XanuraProtocolHandler XPH;
         private static Logic Zichtakker17Logic = new Logic();
+        private static WebServer webServer = new WebServer();
         private static Timer TwoSecTimer = null;
+        private static Timer fiveminTimer = null;
         private static TimerCallback timerCallBack = null;
         private static bool StatusBathroomMovement = false;
         private static Queue tempQ;
         private static Queue lumQ;
         private static Queue humQ;
         private static Queue moveQ;
+        private event ReceivedDataEventHandler XanuraWebRequests;
 
         //static void button_OnInterrupt(uint data1, uint data2, DateTime time)
         //{
@@ -30,10 +33,10 @@ namespace mySecondtry
         //}
 
         public static void Main()
-        {
-            Microsoft.SPOT.Hardware.Utility.SetLocalTime(SetDatetime.NTPTime("time-a.nist.gov", +1));
+        {            
             XPH = new XanuraProtocolHandler();
-            XPH.DataReceivedFromSerial += new ReceivedDataEventHandler(logic_DataReceived);  
+            XPH.DataReceivedFromSerial += new ReceivedDataEventHandler(logic_DataReceived);
+            webServer.DataReceived += new ReceivedDataEventHandler(webServer_DataReceived);
             //InterruptPort button = new InterruptPort(Pins.ONBOARD_BTN, true, Port.ResistorMode.Disabled, Port.InterruptMode.InterruptEdgeHigh);
             //button.OnInterrupt += new NativeEventHandler(button_OnInterrupt);
             //////WebServer init
@@ -42,6 +45,7 @@ namespace mySecondtry
             
 
             TwoSecTimer = new Timer(TwoSecActions, null, 0, 2000);
+            fiveminTimer = new Timer(fiveminActions, null, 0, 60000);
 
             //tempQ = new Queue();
             //lumQ = new Queue();
@@ -50,7 +54,7 @@ namespace mySecondtry
 
             while (true)
             {
-                XPH.TestAlive();
+                //XPH.TestAlive();
                 //webServer.testGC();
                 //Thread.Sleep(150);
             }
@@ -70,6 +74,20 @@ namespace mySecondtry
             //webServer.Dispose();
         }
 
+
+
+        private static void fiveminActions(object state)
+        {
+            //ZwaveLogic();
+            try
+            {
+                Microsoft.SPOT.Hardware.Utility.SetLocalTime(SetDatetime.NTPTime("time-a.nist.gov", +1));
+            }
+            catch (Exception ex)
+            {
+                Logging.LogMessageToFile("Program" + " - TwoSecActions NTPTime- " + "error =>" + ex.Message.ToString(), "ALL");
+            }
+        }
 
         private static void TwoSecActions(object state)
         {
@@ -179,6 +197,34 @@ namespace mySecondtry
                 Logging.LogMessageToFile(ex.Message, "All");
             }
 
+        }
+
+        private static void webServer_DataReceived(object sender, ReceivedDataEventArgs e)
+        {
+            try
+            {
+                switch (e.ReceivedData)
+                {
+                    case "VENTILATION_OFF":
+                        XPH.SendMessage("C01C01COFFCOFFC03C03COFFCOFF");
+                        break;
+                    case "VENTILATION_1":
+                        XPH.SendMessage("C01C01CONCONC03C03COFFCOFF");
+                        break;
+                    case "VENTILATION_2":
+                        break;
+                    //XPH.SendMessage("");
+                    case "VENTILATION_3":
+                        XPH.SendMessage("C01C01CONCONC03C03CONCON");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Print("error webServer_DataReceived");
+            }
         }
 
 

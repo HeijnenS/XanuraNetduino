@@ -7,7 +7,7 @@ using SecretLabs.NETMF.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
 using System.Net;
 
-namespace mySecondtry
+namespace Domotica
 {
     class Logic
     {

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.SPOT;
 
-namespace mySecondtry
+namespace Domotica
 {
     public class ReceivedDataEventArgs:EventArgs
     {
