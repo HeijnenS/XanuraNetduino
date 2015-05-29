@@ -33,14 +33,16 @@ namespace Domotica
         //}
 
         public static void Main()
-        {            
+        {
+            Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
+            webServer.DataReceived += new ReceivedDataEventHandler(webServer_DataReceived);
             XPH = new XanuraProtocolHandler();
             XPH.DataReceivedFromSerial += new ReceivedDataEventHandler(logic_DataReceived);
-            webServer.DataReceived += new ReceivedDataEventHandler(webServer_DataReceived);
+
             //InterruptPort button = new InterruptPort(Pins.ONBOARD_BTN, true, Port.ResistorMode.Disabled, Port.InterruptMode.InterruptEdgeHigh);
             //button.OnInterrupt += new NativeEventHandler(button_OnInterrupt);
             //////WebServer init
-            Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
+
             ////new Thread(secondThread).Start();
             
 
