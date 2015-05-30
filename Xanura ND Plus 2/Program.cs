@@ -6,8 +6,10 @@ using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using SecretLabs.NETMF.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
+using SecretLabs.NETMF.Hardware.NetduinoPlus;
 using System.IO;
 using System.Collections;
+using Microsoft.SPOT.IO;
 
 
 namespace Domotica
@@ -26,6 +28,7 @@ namespace Domotica
         private static Queue humQ;
         private static Queue moveQ;
         private event ReceivedDataEventHandler XanuraWebRequests;
+        public bool SDCardPresent = false;
 
         //static void button_OnInterrupt(uint data1, uint data2, DateTime time)
         //{
@@ -34,10 +37,16 @@ namespace Domotica
 
         public static void Main()
         {
+            Program program = new Program();
             Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
+            fiveminTimer = new Timer(fiveminActions, null, 0, 60000);
+            TwoSecTimer = new Timer(TwoSecActions, null, 0, 2000);            
             webServer.DataReceived += new ReceivedDataEventHandler(webServer_DataReceived);
             XPH = new XanuraProtocolHandler();
             XPH.DataReceivedFromSerial += new ReceivedDataEventHandler(logic_DataReceived);
+            RemovableMedia.Insert += new InsertEventHandler(RemovableMedia_Insert);
+            RemovableMedia.Eject += new EjectEventHandler(RemovableMedia_Eject);
+
 
             //InterruptPort button = new InterruptPort(Pins.ONBOARD_BTN, true, Port.ResistorMode.Disabled, Port.InterruptMode.InterruptEdgeHigh);
             //button.OnInterrupt += new NativeEventHandler(button_OnInterrupt);
@@ -46,8 +55,7 @@ namespace Domotica
             ////new Thread(secondThread).Start();
             
 
-            TwoSecTimer = new Timer(TwoSecActions, null, 0, 2000);
-            fiveminTimer = new Timer(fiveminActions, null, 0, 60000);
+
 
             //tempQ = new Queue();
             //lumQ = new Queue();
@@ -94,6 +102,7 @@ namespace Domotica
         private static void TwoSecActions(object state)
         {
             //ZwaveLogic();
+            Logging.LogMessageToFile("Program" + " - TwoSecActions ?Query", "ALL");
             XPH.Query();
         }
 
@@ -196,7 +205,7 @@ namespace Domotica
             }
             catch(Exception ex)
             {
-                Logging.LogMessageToFile(ex.Message, "All");
+                Logging.LogMessageToFile("Program - logic_DataReceived => " + ex.Message, "All");
             }
 
         }
@@ -225,8 +234,18 @@ namespace Domotica
             }
             catch (Exception ex)
             {
-                Debug.Print("error webServer_DataReceived");
+                Debug.Print("error webServer_DataReceived => " + ex.Message.ToString());
             }
+        }
+
+        static void RemovableMedia_Eject(object sender, MediaEventArgs e)
+        {
+            Debug.Print("Ejected");
+        }
+
+        static void RemovableMedia_Insert(object sender, MediaEventArgs e)
+        {
+            Debug.Print("Inserted");
         }
 
 
