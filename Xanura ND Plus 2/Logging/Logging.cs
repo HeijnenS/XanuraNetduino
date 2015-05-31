@@ -99,7 +99,7 @@ namespace Domotica
                     using (var filestream = new FileStream(filePath, FileMode.Append))
                     {
                         StreamWriter streamWriter = new StreamWriter(filestream);
-                        streamWriter.WriteLine(datet.ToString("MM/dd hh:mm:ss") + "> " + message);
+                        streamWriter.WriteLine(datet.ToString("MM/dd hh:mm:ss:ffff") + "> " + message);
                         streamWriter.Close();
                         if (debug)
                         {
