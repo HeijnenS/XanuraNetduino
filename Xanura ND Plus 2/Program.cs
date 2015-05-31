@@ -16,24 +16,36 @@ namespace Domotica
 {
     public class Program
     {
-        private static XanuraProtocolHandler XPH;
+        private static XanuraProtocolHandler XPH = new XanuraProtocolHandler();
         private static Logic Zichtakker17Logic = new Logic();
         private static WebServer webServer = new WebServer();
         private static Timer TwoSecTimer = null;
         private static Timer fiveminTimer = null;
-        private static TimerCallback timerCallBack = null;
-        private static bool StatusBathroomMovement = false;
-        private static Queue tempQ;
-        private static Queue lumQ;
-        private static Queue humQ;
-        private static Queue moveQ;
-        private event ReceivedDataEventHandler XanuraWebRequests;
+        //private static TimerCallback timerCallBack = null;
+        //private static bool StatusBathroomMovement = false;
+        //private static Queue tempQ;
+        //private static Queue lumQ;
+        //private static Queue humQ;
+        //private static Queue moveQ;
+        //private event ReceivedDataEventHandler XanuraWebRequests;
         public bool SDCardPresent = false;
+        private bool switchAirUnit = false;
 
-        //static void button_OnInterrupt(uint data1, uint data2, DateTime time)
-        //{
-        //    Logging.LogMessageToFile("Onboard buttonn pressed", "ALL");
-        //}
+        /*
+        private void button_OnInterrupt(uint data1, uint data2, DateTime time)
+        {
+            if (switchAirUnit)
+            {
+                XPH.SendMessage("C01C01COFFCOFFC03C03COFFCOFF");
+            }
+            else
+            {
+                XPH.SendMessage("C01C01CONCONC03C03CONCON");
+            }
+            switchAirUnit = !switchAirUnit;
+            Logging.LogMessageToFile("Onboard buttonn pressed", "ALL");
+        }
+        */
 
         public static void Main()
         {
@@ -42,21 +54,14 @@ namespace Domotica
             fiveminTimer = new Timer(fiveminActions, null, 0, 60000);
             TwoSecTimer = new Timer(TwoSecActions, null, 0, 2000);            
             webServer.DataReceived += new ReceivedDataEventHandler(webServer_DataReceived);
-            XPH = new XanuraProtocolHandler();
             XPH.DataReceivedFromSerial += new ReceivedDataEventHandler(logic_DataReceived);
             RemovableMedia.Insert += new InsertEventHandler(RemovableMedia_Insert);
             RemovableMedia.Eject += new EjectEventHandler(RemovableMedia_Eject);
 
-
-            //InterruptPort button = new InterruptPort(Pins.ONBOARD_BTN, true, Port.ResistorMode.Disabled, Port.InterruptMode.InterruptEdgeHigh);
-            //button.OnInterrupt += new NativeEventHandler(button_OnInterrupt);
+            //InterruptPort button = new InterruptPort(SecretLabs.NETMF.Hardware.Netduino.Pins.ONBOARD_BTN, true, Port.ResistorMode.Disabled, Port.InterruptMode.InterruptEdgeHigh);
+            //button.OnInterrupt += new NativeEventHandler(program.button_OnInterrupt);
             //////WebServer init
-
-            ////new Thread(secondThread).Start();
-            
-
-
-
+            ////new Thread(secondThread).Start();         
             //tempQ = new Queue();
             //lumQ = new Queue();
             //humQ = new Queue();
@@ -64,12 +69,8 @@ namespace Domotica
 
             while (true)
             {
-                //XPH.TestAlive();
-                //webServer.testGC();
-                //Thread.Sleep(150);
+                Thread.Sleep(1000);
             }
-
-
             //string s = "{\"id\": \"ZWayVDev_20:0:49:1\"\"deviceType\": \"probe\"\"metrics\": {  \"probeTitle\": \"Temperature\"  \"scaleTitle\": \"°C\"  \"level\": 7.599999904632568  \"title\": \"Temperature Sensor\"  \"iconBase\": \"zwave\"  }\"tags\": []\"location\": null\"updateTime\": 1387882443}";
             //ZWave.TestJDom(s);
         }
@@ -105,7 +106,7 @@ namespace Domotica
             Logging.LogMessageToFile("Program" + " - TwoSecActions ?Query", "ALL");
             XPH.Query();
         }
-
+/*
         private static void ZwaveLogic()
         {
             double temperature;
@@ -187,7 +188,7 @@ namespace Domotica
                 Logging.LogMessageToFile(e.Message, "All");
             }
         }
-
+*/
         private static void logic_DataReceived(object sender, ReceivedDataEventArgs e)
         {
             try
