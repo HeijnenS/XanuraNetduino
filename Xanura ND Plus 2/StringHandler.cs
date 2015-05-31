@@ -6,6 +6,16 @@ namespace Domotica
     class StringHandler
     {
 
+        public static string CharsToString(char[] Input)
+        {
+            string temp = "";
+            for (int Counter = 0; Counter < Input.Length; ++Counter)
+            {
+                temp = temp + Input[Counter];
+            }
+            return temp;
+        }
+
         public static string Left(string txtLine, int start, int length)
         {
             try

@@ -120,7 +120,7 @@ namespace Domotica
                         return "Turning ventilation to power mode 3";
                     case "Test2": return "Test";
                     default:
-                        return "IP / LISTFILES \r\n READFILE \r\n CLEARFILE \r\n ACTION-VENTILATION_OFF \r\n ACTION-VENTILATION_1 \r\n ACTION-VENTILATION_2 \r\n ACTION-VENTILATION_3";
+                        return "/LISTFILES \r\n /READFILE \r\n /CLEARFILE \r\n /ACTION-VENTILATION_OFF \r\n /ACTION-VENTILATION_1 \r\n /ACTION-VENTILATION_2 \r\n /ACTION-VENTILATION_3";
                 }
             }
             catch (Exception e)
