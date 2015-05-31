@@ -6,6 +6,7 @@ using System.IO;
 using SecretLabs.NETMF.IO;
 using Microsoft.SPOT;
 using Microsoft.SPOT.IO;
+using Domotica;
 
 namespace mySecondtry
 {
@@ -24,25 +25,7 @@ namespace mySecondtry
         public static string fileType = "";
         private static bool debug = true;
 
-        private static bool VolumeExist()
-        {
-            try
-            {
-                VolumeInfo[] volumes = VolumeInfo.GetVolumes();
-                foreach (VolumeInfo volumeInfo in volumes)
-                {
-                    if (volumeInfo.Name.Equals("SD"))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+
 
         public static string LogPathAll()
         {
@@ -56,7 +39,7 @@ namespace mySecondtry
             DateTime datet = DateTime.Now;
             try
             {
-                if (VolumeExist())
+                if (SD.VolumeExist())
                 {
                     DirectoryInfo rootDirectory = new DirectoryInfo(@"\SD\"); //root dir of Netduino
                     String filePath = rootDirectory + "\\Log " + caller.ToUpper() + " " + datet.ToString("MM_dd") + ".log";
@@ -139,7 +122,7 @@ namespace mySecondtry
         {
             try
             {
-                if (VolumeExist())
+                if (SD.VolumeExist())
                 {
                     using (var filestream = new FileStream(filePath, FileMode.Create))
                     {
@@ -160,7 +143,7 @@ namespace mySecondtry
         {
             try
             {
-                if (VolumeExist())
+                if (SD.VolumeExist())
                 {
                     FileInfo info = new FileInfo(filePath);
                     return info.Length;

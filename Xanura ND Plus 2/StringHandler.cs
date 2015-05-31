@@ -27,7 +27,7 @@ namespace Domotica
             }
             catch (Exception e)
             {
-                Logging.LogMessageToFile(e.Message, "ALL");
+                //Logging.LogMessageToFile(e.Message, "ALL");
                 return "";
             }
         }
@@ -50,7 +50,7 @@ namespace Domotica
             }
             catch (Exception e)
             {
-                Logging.LogMessageToFile(e.Message, "ALL");
+                //Logging.LogMessageToFile(e.Message, "ALL");
                 return 0;
             }
         }
@@ -74,7 +74,7 @@ namespace Domotica
             }
             catch (Exception e)
             {
-                Logging.LogMessageToFile(e.Message, "ALL");
+                //Logging.LogMessageToFile(e.Message, "ALL");
                 return "";
             }
 

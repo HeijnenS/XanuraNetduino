@@ -36,20 +36,18 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
-    <Compile Include="Xanura\Daix.cs" />
-    <Compile Include="Logging\Logging.cs" />
-    <Compile Include="Logic.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Logging\Logging.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ReceivedDataEventArgs.cs" />
     <Compile Include="ReceivedDataEventHandler.cs" />
-    <Compile Include="Serial\RS232.cs" />
     <Compile Include="NTP\SetDatetime.cs" />
-    <Compile Include="Xanura\ShortA10Message.cs" />
+    <Compile Include="SD\SD.cs" />
     <Compile Include="StringHandler.cs" />
     <Compile Include="WebServer\WebServer.cs" />
-    <Compile Include="Xanura\XanuraProtocolHandler.cs" />
-    <Compile Include="ZWave\ZWave.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.SPOT.Hardware" />
@@ -66,5 +64,9 @@
     <Reference Include="System" />
     <Reference Include="System.Http" />
     <Reference Include="System.IO" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xanura\" />
+    <Folder Include="ZWave\" />
   </ItemGroup>
 </Project>
