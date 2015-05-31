@@ -60,7 +60,7 @@ namespace Domotica
                 if (VolumeExist()) //check if the SD card is mounted
                 {
                     DirectoryInfo rootDirectory = new DirectoryInfo(@"\SD\"); //root dir of Netduino
-                    String filePath = rootDirectory + "\\Log " + caller.ToUpper() + " " + datet.ToString("MM_dd") + ".log";
+                    String filePath = rootDirectory + "\\" + caller.ToUpper() + "_" + datet.ToString("MM_dd") + ".log";
                     VolumeInfo vol = new VolumeInfo("SD");
 
                     if (vol.TotalFreeSpace < vol.TotalSize * .1)
@@ -115,30 +115,7 @@ namespace Domotica
             }
         }
 
-        public static string ReadActiveLogFile(string caller)
-        {
-            DateTime datet = DateTime.Now;
-            try
-            {
-                DirectoryInfo rootDirectory = new DirectoryInfo(@"\SD\"); //root dir of Netduino
-                String filePath = rootDirectory + "\\Log " + caller.ToUpper() + " " + datet.ToString("MM_dd") + ".log";
-                char[] buffer = new char[1000];
-                using (var filestream = new FileStream(filePath, FileMode.Open))
-                {
-                    StreamReader streamReader = new StreamReader(filestream);
-                    //int i = streamReader.ReadBlock(buffer, 0, buffer.Length);
-                    string text = streamReader.ReadToEnd();
-                    //.string.string text = new string(buffer);
-                    return text;
-                }
-            }
-            catch (Exception ex)
-            {
-                //throw new Exception("Error in Writing line to file" + e.Message);
-                Logging.LogMessageToFile("Error in ReadActiveLogFile => " + ex.Message.ToString(), "Logging");
-                return "";
-            }
-        }
+
 
         private static void CreateFile(string filePath)
         {
