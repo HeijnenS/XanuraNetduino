@@ -30,9 +30,13 @@ namespace Domotica
             Debug.Print(Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].IPAddress);
             //Start listen for web requests
             socket.Listen(10);
-            listenThread = new Thread(new ThreadStart(ListenForRequest));
-            Debug.Print(listenThread.ManagedThreadId.ToString() + " = listenthread");
-            listenThread.Start();
+            listenThread = new Thread(new ThreadStart(ListenForRequest));            
+            //if (Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].IPAddress.ToString()!="0.0.0.0")
+            //{
+                Debug.Print(listenThread.ManagedThreadId.ToString() + " = listenthread");
+                listenThread.Start();
+            //}
+            
             //ListenForRequest();
 
 
@@ -53,28 +57,32 @@ namespace Domotica
                 //Debug.Print("Listen request");
                 try
                 {
-                    using (Socket clientSocket = socket.Accept())
+                    if (Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].IPAddress.ToString() != "0.0.0.0")
                     {
-                        //Get clients IP
-                        IPEndPoint clientIP = clientSocket.RemoteEndPoint as IPEndPoint;
-                        EndPoint clientEndPoint = clientSocket.RemoteEndPoint;
-                        //int byteCount = cSocket.Available;
-                        int bytesReceived = clientSocket.Available;
-                        if (bytesReceived > 0)
+                        using (Socket clientSocket = socket.Accept())
                         {
-                            //Get request
-                            byte[] buffer = new byte[bytesReceived];
-                            int byteCount = clientSocket.Receive(buffer, bytesReceived, SocketFlags.None);
-                            string request = new string(Encoding.UTF8.GetChars(buffer));
-                            //Compose a response
-                            string response = HandleWebRequests(request);
-                            string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
-                            clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
-                            clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
-                            //Blink the onboard LED
-                            //led.Write(true);
-                            //Thread.Sleep(150);
-                            //led.Write(false);
+                        
+                            //Get clients IP
+                            IPEndPoint clientIP = clientSocket.RemoteEndPoint as IPEndPoint;
+                            EndPoint clientEndPoint = clientSocket.RemoteEndPoint;
+                            //int byteCount = cSocket.Available;
+                            int bytesReceived = clientSocket.Available;
+                            if (bytesReceived > 0)
+                            {
+                                //Get request
+                                byte[] buffer = new byte[bytesReceived];
+                                int byteCount = clientSocket.Receive(buffer, bytesReceived, SocketFlags.None);
+                                string request = new string(Encoding.UTF8.GetChars(buffer));
+                                //Compose a response
+                                string response = HandleWebRequests(request);
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                                //Blink the onboard LED
+                                //led.Write(true);
+                                //Thread.Sleep(150);
+                                //led.Write(false);
+                            }
                         }
                     }
                 }
@@ -82,7 +90,7 @@ namespace Domotica
                 {
                     Logging.LogMessageToFile(this.ToString() + "-" + e.Message, "WebserverThread");
                 }
-                Debug.Print("Exit Listen request");
+                //Debug.Print("Exit Listen request");
             }
         }
 
